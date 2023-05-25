@@ -15,7 +15,7 @@
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <div class="container-fluid d-flex justify-content-evenly">
               <ul class="navbar-nav">
-                <a href="index.html"><img src="../logo.png" width="90px;"></a>
+                <a href="index.html"><img src="../img/logo.png" width="90px;"></a>
               </ul>
             </div>
         </nav>
