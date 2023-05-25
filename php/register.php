@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>   
-        <link href="style.css" rel="stylesheet" type="text/css">
+        <link href="/style.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
         <title>Assignment 1 - Case Study</title>
@@ -15,15 +15,14 @@
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <div class="container-fluid d-flex justify-content-evenly">
               <ul class="navbar-nav">
-                <a href="index.html"><img src="../logo.png" width="90px;"></a>
+                <a href="index.html"><img src="../img/logo.png" width="90px;"></a>
               </ul>
             </div>
         </nav>
 
     <div class="d-flex justify-content-center align-items-center vh-100">
     	
-    	<form class="shadow w-450 p-3" action="signup.php" method="post" enctype="multipart/form-data">>
-
+    	<form class="shadow w-450 p-3" action="signup.php" method="post" enctype="multipart/form-data">
     		<h4 class="display-4  fs-5">Create Account</h4><br>
     		<?php if(isset($_GET['error'])){ ?>
     		<div class="alert alert-danger" role="alert">
@@ -66,7 +65,7 @@
 		           name="pp">
 		  </div>
 		  
-		  <button type="submit" class="btn btn-primary">Sign Up</button>
+		  <button type="submit" name="submit" class="btn btn-primary">Sign Up</button>
 		  <a href="login.php" class="link-secondary ">Login</a>
 		</form>
     </div>

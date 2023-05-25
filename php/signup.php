@@ -1,85 +1,74 @@
 <?php 
 
-if(isset($_POST['fname']) && 
-   isset($_POST['uname']) &&  
-   isset($_POST['pass'])){
+if(isset($_POST['submit'])) {
 
-    include "db_conn.php";
+   include "db_conn.php";
 
-    $fname = $_POST['fname'];
-    $uname = $_POST['uname'];
-    $pass = $_POST['pass'];
+   $fname = $_POST['fname'];
+   $uname = $_POST['uname'];
+   $pass = $_POST['pass'];
 
-    $data = "fname=".$fname."&uname=".$uname;
+   $data = "fname=".$fname."&uname=".$uname;
     
-    if (empty($fname)) {
+   if (empty($fname)) {
     	$em = "Full name is required";
     	header("Location:register.php?error=$em&$data");
-	    exit;
-    }else if(empty($uname)){
+	   exit;
+   } else if (empty($uname)){
     	$em = "Username is required";
     	header("Location:register.php?error=$em&$data");
-	    exit;
-    }else if(empty($pass)){
+	   exit;
+   } else if (empty($pass)){
     	$em = "Password is required";
     	header("Location:register.php?error=$em&$data");
-	    exit;
-    }else {
-      // hashing the password
-      $pass = password_hash($pass, PASSWORD_DEFAULT);
+	   exit;
+   }
+   
+   if (!file_exists($_FILES['pp']['tmp_name']) || !is_uploaded_file($_FILES['pp']['tmp_name'])) {
+      $em = "Profile picture is required";
+      header("Location:register.php?error=$em&$data");
+	   exit;
+   } else {
 
-      if (isset($_FILES['pp']['name']) AND !empty($_FILES['pp']['name']) ) {
-         
-         
-         $img_name = $_FILES['pp']['name'];
-         $tmp_name = $_FILES['pp']['tmp_name'];
-         $error = $_FILES['pp']['error'];
+      $img = $_FILES['pp'];
+      $img_name = $_FILES['pp']['name'];
+      $tmp_name = $_FILES['pp']['tmp_name'];
+      $img_size = $_FILES['pp']['size'];
+      $error = $_FILES['pp']['error'];
 
-         
-         if($error AND $cerror=== 0){
-            $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
-            $img_ex_to_lc = strtolower($img_ex);
+      $img_ex = pathinfo($img_name, PATHINFO_EXTENSION);
+      $img_ex_to_lc = strtolower($img_ex);
 
+      $allowed_exs = array('jpg', 'jpeg', 'png');
 
-            $allowed_exs = array('jpg', 'jpeg', 'png');
-            if(in_array($img_ex_to_lc, $allowed_exs)){
-               $new_img_name = uniqid($uname, true).'.'.$img_ex_to_lc;
-               $img_upload_path = '../upload/'.$new_img_name;
+      if (in_array($img_ex_to_lc, $allowed_exs)) {
+         if($error === 0) {
+            if($img_size < 10485760) { //file size must be < 10MB
+               $new_img_name = uniqid($uname).'.'.$img_ex_to_lc;
+               $img_upload_path = '../upload/'. $new_img_name;
+
                move_uploaded_file($tmp_name, $img_upload_path);
-
-               // Insert into Database
-               $sql = "INSERT INTO users(fname, username, password, pp) 
-                 VALUES(?,?,?,?)";
-               $stmt = $conn->prepare($sql);
-               $stmt->execute([$fname, $uname, $pass, $new_img_name]);
-
-               header("Location:register.php?success=Your account has been created successfully");
-                exit;
-            }else {
-               $em = "You can't upload files of this type";
-               header("Location:register.php?error=$em&$data");
-               exit;
             }
-         }else {
-            $em = "unknown error occurred!";
-            header("Location:register.php?error=$em&$data");
-            exit;
          }
 
-        
-      }else {
-       	$sql = "INSERT INTO users(fname, username, password) 
-       	        VALUES(?,?,?)";
-       	$stmt = $conn->prepare($sql);
-       	$stmt->execute([$fname, $uname, $pass]);
+         // hashing the password
+         $pass = password_hash($pass, PASSWORD_DEFAULT);
 
-       	header("Location:register.php?success=Your account has been created successfully");
-   	    exit;
+         // Insert into Database
+         $sql = "INSERT INTO users(fname, username, password, pp) VALUES(?,?,?,?)";
+         $stmt = $conn->prepare($sql);
+         $stmt->execute([$fname, $uname, $pass, $new_img_name]);
+
+         header("Location:register.php?success=Your account has been created successfully");
+         exit;
+      } else {
+         $em = "You can't upload files of this type";
+         header("Location:register.php?error=$em&$data");
+         exit;
       }
-    }
+   }
 
-
-}else {
-	header("Location:register.php?error=error");
+} else {
+	header("Location:register.php?error=Something went wrong!");
 	exit;
 }
